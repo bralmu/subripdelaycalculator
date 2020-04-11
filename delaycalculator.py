@@ -2,11 +2,16 @@ import subripreader
 
 
 def main():
-    (time_array_a, time_array_b) = calculate_time_arrays('input1.srt', 'input2.srt')
+    calculate_delay('input1.srt', 'input2.srt')
+
+
+def calculate_delay(reference_file_path: str, delayed_file_path: str):
+    (time_array_a, time_array_b) = calculate_time_arrays(reference_file_path, delayed_file_path)
     (delays, matching_factors) = calculate_matching_factors_for_several_delays(time_array_a, time_array_b)
     best_case_index = search_best_case(delays, matching_factors)
     delay_estimation_in_milliseconds = estimate_delay_in_milliseconds(delays, matching_factors, best_case_index)
     print('Subtitle is delayed', delay_estimation_in_milliseconds, 'ms from the reference.')
+    return delay_estimation_in_milliseconds
     
         
 def calculate_time_arrays(reference_file_path, delayed_file_path):
@@ -43,11 +48,12 @@ def search_best_case(delays, matching_factors):
         if matching_factors[current_index] > best_matching_factor:
             best_matching_factor = matching_factors[current_index]
             best_case_index = current_index
+    print('Confidence in estimation: ' + str(int(best_matching_factor * 100)) + '%')
     return best_case_index
 
 
 def estimate_delay_in_milliseconds(delays, matching_factors, best_case_index):
-    calculated_delay_in_milliseconds = delays[best_case_index] * 1000    
+    calculated_delay_in_milliseconds = delays[best_case_index] * 1000
     if best_case_index != 0 and best_case_index != len(delays):
         left_neighbor_matching_factor = matching_factors[best_case_index - 1]
         right_neighbor_matching_factor = matching_factors[best_case_index + 1]

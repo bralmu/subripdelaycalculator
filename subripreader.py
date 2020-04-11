@@ -51,7 +51,7 @@ def create_time_array(start_end_times_list):
         end_time = time_pair[1]
         initial_affected_index = int(start_time / 1000)
         last_affected_index = int(end_time / 1000)
-        for index in range(initial_affected_index, last_affected_index + 1):
+        for index in range(initial_affected_index, min(last_affected_index + 1, len(time_array))):
             if index != initial_affected_index and index != last_affected_index:
                 time_array[index] += 1
             elif index == initial_affected_index and index != last_affected_index:
